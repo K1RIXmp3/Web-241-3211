@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Собрать ланч - Food Construct</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Open Sans', sans-serif;
+        }
+        
+        body {
+            color: #333;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 2px solid #e74c3c;
+        }
+        
+        h1 {
+            color: #e74c3c;
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+        
+        nav {
+            margin-top: 15px;
+        }
+        
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+        
+        nav ul li {
+            margin: 5px 15px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 5px 10px;
+        }
+        
+        nav ul li a:hover {
+            color: #e74c3c;
+        }
+        
+        #active {
+            color: #e74c3c;
+        }
+        
+        main {
+            background-color: white;
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        section {
+            margin-bottom: 50px;
+        }
+        
+        h2 {
+            color: #e74c3c;
+            margin-bottom: 25px;
+            font-size: 24px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        /* Стили для страницы "Собрать ланч" */
+        .menu-section {
+            margin-bottom: 50px;
+        }
+
+        .dishes-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .dish-item {
+            display: flex;
+            flex-direction: column;
+            padding: 30px 40px;
+            border-radius: 35px;
+            cursor: pointer;
+            background-color: white;
+            filter: drop-shadow(17px 19px 24px rgba(0, 0, 0, 0.13));
+            transition: all 0.3s ease;
+        }
+
+        .dish-item:hover {
+            border: 2px solid tomato;
+        }
+
+        .dish-item:hover button {
+            background-color: tomato;
+            color: white;
+        }
+
+        .dish-item img {
+            width: 100%;
+            border-radius: 35px;
+            margin-bottom: 15px;
+        }
+
+        .dish-item .price {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .dish-item .name {
+            font-size: 18px;
+            margin-bottom: 10px;
+            flex-grow: 1;
+        }
+
+        .dish-item .weight {
+            color: #777;
+            margin-bottom: 15px;
+        }
+
+        .dish-item button {
+            background-color: #f1eee9;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: auto;
+            transition: all 0.3s ease;
+        }
+
+        /* Стили для формы заказа */
+        .order-form-section {
+            background-color: white;
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .order-form-section h2 {
+            color: #e74c3c;
+            margin-bottom: 25px;
+            font-size: 24px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .order-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .form-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-column h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-group label {
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group select:focus,
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #e74c3c;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .radio-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .form-note {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .time-input {
+            margin-top: 10px;
+        }
+        
+        .form-buttons {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .reset-btn,
+        .submit-btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .reset-btn {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .reset-btn:hover {
+            background-color: #ddd;
+        }
+        
+        .submit-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .submit-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 20px;
+            display: block;
+            margin-top: 15px;
+        }
+
+        /* Адаптивность для страницы "Собрать ланч" */
+        @media (max-width: 800px) {
+            .dishes-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            nav ul {
+                justify-content: space-between;
+            }
+            
+            h1 {
+                text-align: center;
+            }
+            
+            .order-form {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .dishes-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav ul li a {
+                font-size: 22px;
+            }
+            
+            h2 {
+                text-align: center;
+            }
+            
+            .form-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Food Construct</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">О нас</a></li>
+                <li><a href="lunch.html" id="active">Собрать ланч</a></li>
+                <li><a href="#orders">Заказы</a></li>
+                <li><a href="#footer">Контакты</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="menu-section">
+            <h2>Выберите суп</h2>
+            <div class="dishes-grid">
+                <div class="dish-item">
+                    <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Гаспачо">
+                    <p class="price">195Р</p>
+                    <p class="name">Гаспачо</p>
+                    <p class="weight">350 г</p>
+                    <button class="add-btn">Добавить</button>
+                </div>
+                
+                <div class="dish-item">
+                    <img src="https://avatars.dzeninfra.ru/get-zen_doc/271828/pub_652b8c38816f970013a9191c_652c18de3edfc33e5dbca251/scale_1200" alt="Грибной суп-пюре">
+                    <p class="price">185Р</p>
+                    <p class="name">Грибной суп-пюре</p>
+                    <p class="weight">330 г</p>
+                    <button class="add-btn">Добавить</button>
+                </div>
+                
+                <div class="dish-item">
+                    <img src="https://i.pinimg.com/originals/d8/51/8c/d8518c0cb2d4edc23d607304b39ccdaf.jpg" alt="Норвежский суп">
+                    <p class="price">270Р</p>
+                    <p class="name">Норвежский суп</p>
+                    <p class="weight">330 г</p>
+                    <button class="add-btn">Добавить</button>
+                </div>
+            </div>
+        </section>
+        
+        <section class="menu-section">
+            <h2>Выберите главное блюдо</h2>
+            <div class="dishes-grid">
+                <div class="dish-item">
+                    <img src="https://static.tildacdn.com/tild3634-3565-4130-a662-333831323464/guriya_photo_index_2.jpg" alt="Жареная картошка с грибами">
+                    <p class="price">150Р</p>
+                    <p class="name">Жареная картошка с грибами</p>
+                    <p class="weight">300 г</p>
+                    <button class="add-btn">Добавить</button>
+                </div>
+                
+                <div class="dish-item">
+                    <img src="https://avatars.dzeninfra.ru/get-zen_doc/271828/pub_679dd5d459f58c4070f22c53_679dd6b679a95e5d4e6d7903/scale_1200" alt="Лазанья">
+                    <p class="price">385Р</p>
+                    <p class="name">Лазанья</p>
+                    <p class="weight">350 г</p>
+                    <button class="add-btn">Добавить</button>
+                </div>
+                
+                <div class="dish-item">
+                    <img src="https://здоровое-питание.рф/upload/iblock/203/pxecqr4yh8b20b7i28ina0b1jf4hac8z/zagruzhennoe-_66_.jpg" alt="Котлеты из курицы">
+                    <p class="price">225Р</p>
+                    <p class="name">Котлеты из курицы с картофельным пюре</p>
+                    <p class="weight">350 г</p>
+                    <button class="add-btn">Добавить</button>
+                </div>
+            </div>
+        </section>
+        
+        <section class="menu-section">
+            <h2>Выберите напиток</h2>
+            <div class="dishes-grid">
+                <div class="dish-item">
+                    <img src="https://images.unsplash.com/photo-1607690506833-498e04ab3ffa?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Апельсиновый сок">
+                    <p class="price">120Р</p>
+                    <p class="name">Апельсиновый сок</p>
+                    <p class="weight">300 мл</p>
+                    <button class="add-btn">Добавить</button>
+                </div>
+                
+                <div class="dish-item">
+                    <img src="https://avatars.mds.yandex.net/i?id=15fcb55bce51c93948c8085149dfc3a0_l-5234261-images-thumbs&n=13" alt="Яблочный сок">
+                    <p class="price">90Р</p>
+                    <p class="name">Яблочный сок</p>
+                    <p class="weight">300 мл</p>
+                    <button class="add-btn">Добавить</button>
+                </div>
+                
+                <div class="dish-item">
+                    <img src="https://plus.unsplash.com/premium_photo-1726842349081-86a2b7c28bee?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Морковный сок">
+                    <p class="price">110Р</p>
+                    <p class="name">Морковный сок</p>
+                    <p class="weight">300 мл</p>
+                    <button class="add-btn">Добавить</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Форма заказа -->
+    <section class="order-form-section">
+        <h2>Сделать заказ</h2>
+        <form class="order-form" action="https://httpbin.org/post" method="POST">
+            <!-- Блок с заказом клиента -->
+            <div class="form-column">
+                <h3>Ваш заказ</h3>
+                
+                <div class="form-group">
+                    <label for="soup">Суп</label>
+                    <select id="soup" name="soup" required>
+                        <option value="">– Выберите суп –</option>
+                        <option value="gaspacho">Гаспачо - 195Р</option>
+                        <option value="mushroom_soup">Грибной суп-пюре - 185Р</option>
+                        <option value="norwegian_soup">Норвежский суп - 270Р</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="main_dish">Главное блюдо</label>
+                    <select id="main_dish" name="main_dish" required>
+                        <option value="">– Выберите главное блюдо –</option>
+                        <option value="fried_potatoes">Жареная картошка с грибами - 150Р</option>
+                        <option value="lasagna">Лазанья - 385Р</option>
+                        <option value="chicken_cutlets">Котлеты из курицы с картофельным пюре - 225Р</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="drink">Напиток</label>
+                    <select id="drink" name="drink" required>
+                        <option value="">– Выберите напиток –</option>
+                        <option value="orange_juice">Апельсиновый сок - 120Р</option>
+                        <option value="apple_juice">Яблочный сок - 90Р</option>
+                        <option value="carrot_juice">Морковный сок - 110Р</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="comments">Комментарии к заказу</label>
+                    <textarea id="comments" name="comments" placeholder="Ваши пожелания к заказу..."></textarea>
+                </div>
+            </div>
+            
+            <!-- Блок с данными клиента -->
+            <div class="form-column">
+                <h3>Ваши данные</h3>
+                
+                <div class="form-group">
+                    <label for="name">Имя</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="newsletter" name="newsletter" checked>
+                    <label for="newsletter">Получать информацию о скидках и акциях</label>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Номер телефона</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Адрес доставки</label>
+                    <input type="text" id="address" name="address" required>
+                    <p class="form-note">Доставка осуществляется только по Москве</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Время доставки:</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="time_asap" name="delivery_time" value="asap" required>
+                            <label for="time_asap">Как можно скорее</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="time_specific" name="delivery_time" value="specific" required>
+                            <label for="time_specific">К указанному времени</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group time-input">
+                    <label for="delivery_time_value">Укажите время доставки</label>
+                    <input type="time" id="delivery_time_value" name="delivery_time_value" 
+                           min="07:00" max="23:00" step="300">
+                    <p class="form-note">Доступное время доставки с 7:00 до 23:00</p>
+                </div>
+            </div>
+            <!--Тяжело...-->
+            <!-- Кнопки формы -->
+            <div class="form-buttons">
+                <button type="reset" class="reset-btn">Сбросить</button>
+                <button type="submit" class="submit-btn">Отправить</button>
+            </div>
+        </form>
+    </section>
+    
+    <footer id="footer">
+        <p>Контантые данные</p>
+        <a href="tel:+70000000000">8-800-555-35-35</a>
+        <p>© 2025 Food Construct. Все права защищены.</p>
+    </footer>
+</body>
+</html>
