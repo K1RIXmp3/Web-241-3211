@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Функции pow, gcd, minDigit, pluralizeRecords, fibb, getSortedArray и cesar</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background-color: #f3f4f6;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      background: white;
+      max-width: 900px;
+      width: 90%;
+      margin: 40px 0;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    p, label, input, textarea, select, button {
+      font-size: 16px;
+      color: #333;
+    }
+
+    input, textarea, select {
+      padding: 6px 8px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 10px;
+      background-color: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #4338ca;
+    }
+
+    span {
+      font-weight: 600;
+      color: #111;
+    }
+
+    pre {
+      background: #f9fafb;
+      padding: 10px;
+      border-radius: 8px;
+      overflow-x: auto;
+      border: 1px solid #e5e7eb;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    section {
+      margin-bottom: 30px;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 25px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Функции pow, gcd, minDigit, pluralizeRecords, fibb, getSortedArray и cesar</h1>
+
+    <!-- Твой исходный HTML и JS ниже без изменений -->
+    
+    <h2>1. Возведение в степень pow(x, n)</h2>
+    <p>Введите основание (x): <input type="number" id="base" /></p>
+    <p>Введите степень (n): <input type="number" id="exponent" min="1" /></p>
+    <button onclick="calculatePower()">Вычислить степень</button>
+    <p>Результат: <span id="powerResult"></span></p>
+    
+    <h2>2. Наибольший общий делитель gcd(a, b)</h2>
+    <p>Введите число a: <input type="number" id="numA" min="0" /></p>
+    <p>Введите число b: <input type="number" id="numB" min="0" /></p>
+    <button onclick="calculateGCD()">Вычислить НОД</button>
+    <p>Наибольший общий делитель: <span id="gcdResult"></span></p>
+    
+    <h2>3. Минимальная цифра minDigit(x)</h2>
+    <p>Введите число x: <input type="number" id="numberX" min="0" /></p>
+    <button onclick="calculateMinDigit()">Найти минимальную цифру</button>
+    <p>Минимальная цифра: <span id="minDigitResult"></span></p>
+    
+    <h2>4. Форматирование строки pluralizeRecords(n)</h2>
+    <p>Введите число n: <input type="number" id="recordCount" min="0" /></p>
+    <button onclick="showPluralizeRecords()">Показать строку</button>
+    <p>Результат: <span id="pluralizeResult"></span></p>
+    
+    <h2>5. Получение n-го числа Фибоначчи fibb(n)</h2>
+    <p>Введите n: <input type="number" id="fibbN" min="0" max="1000" /></p>
+    <button onclick="calculateFibb()">Показать число</button>
+    <p>Результат: <span id="fibbResult"></span></p>
+  
+    <h2>6. Сортировка массива объектов getSortedArray(array, key)</h2>
+    <p>Пример массива: <br>
+      <pre id="exampleArray"></pre>
+    </p>
+    <p>Введите ключ для сортировки: <input type="text" id="sortKey" /></p>
+    <button onclick="sortArray()">Отсортировать массив</button>
+    <p>Отсортированный массив: <br>
+      <pre id="sortedArray"></pre>
+    </p>
+  
+    <h2>7. Шифрование и дешифровка по Цезарю cesar(str, shift, action)</h2>
+    <p>Введите строку: <br><textarea id="cesarInput" rows="3" cols="50"></textarea></p>
+    <p>Введите сдвиг: <input type="number" id="shift" /></p>
+    <p>Действие:
+      <select id="action">
+        <option value="encode">Шифровать</option>
+        <option value="decode">Дешифровать</option>
+      </select>
+    </p>
+    <button onclick="applyCesar()">Выполнить</button>
+    <p>Результат: <br><span id="cesarResult"></span></p>
+    
+
+    <script>
+      // Реализация функции pow
+      function pow(x, n) {
+        if (x < 0 || n < 0 || isNaN(x) || isNaN(n)) {
+          throw new Error('x или n должны быть неотрицательными числами');
+        }
+        let result = 1;
+        for (let i = 0; i < n; i++) {
+          result *= x;
+        }
+        return result;
+      }
+
+      function gcd(a, b) {
+        if (a < 0 || b < 0) {
+          throw new Error('Числа должны быть неотрицательными');
+        }
+        if (a === 0) return b;
+        if (b === 0) return a;
+        while (b !== 0) {
+          const temp = b;
+          b = a % b;
+          a = temp;
+        }
+        return a;
+      }
+
+      function minDigit(x) {
+        if (x < 0 || isNaN(x)) throw new Error('x должно быть неотрицательным числом');
+        if (x === 0) return 0;
+        let minD = 9;
+        let num = Math.floor(x);
+        while (num > 0) {
+          const digit = num % 10;
+          if (digit < minD) minD = digit;
+          num = Math.floor(num / 10);
+        }
+        return minD;
+      }
+
+      function pluralizeRecords(n) {
+        if (n < 0 || isNaN(n) || !Number.isInteger(n)) {
+          throw new Error('n должно быть неотрицательным целым числом');
+        }
+        const lastTwoDigits = n % 100;
+        const lastDigit = n % 10;
+        let form;
+        if (lastTwoDigits >= 11 && lastTwoDigits <= 14) form = 'many';
+        else if (lastDigit === 1) form = 'one';
+        else if (lastDigit >= 2 && lastDigit <= 4) form = 'few';
+        else form = 'many';
+        let word;
+        switch (form) {
+          case 'one': word = 'запись'; break;
+          case 'few': word = 'записи'; break;
+          case 'many': word = 'записей'; break;
+        }
+        return `В результате выполнения запроса было найдено ${n} ${word}`;
+      }
+
+      function fibb(n) {
+        if (n < 0 || n > 1000 || isNaN(n) || !Number.isInteger(n)) {
+          throw new Error('n должно быть целым неотрицательным числом, не превышающим 1000');
+        }
+        if (n === 0) return 0;
+        if (n === 1) return 1;
+        let a = 0;
+        let b = 1;
+        for (let i = 2; i <= n; i++) {
+          [a, b] = [b, a + b];
+        }
+        return b;
+      }
+
+      function getSortedArray(array, key) {
+        for (let i = 1; i < array.length; i++) {
+          let current = array[i];
+          let j = i - 1;
+          while (j >= 0 && compareValues(array[j][key], current[key]) > 0) {
+            array[j + 1] = array[j];
+            j--;
+          }
+          array[j + 1] = current;
+        }
+        return array;
+      }
+
+      function compareValues(a, b) {
+        if (typeof a === 'number' && typeof b === 'number') return a - b;
+        if (a < b) return -1;
+        if (a > b) return 1;
+        return 0;
+      }
+
+      const exampleArray = [
+        { name: 'Алексей', age: 25 },
+        { name: 'Борис', age: 20 },
+        { name: 'Анна', age: 30 },
+        { name: 'Дмитрий', age: 22 },
+      ];
+      document.getElementById('exampleArray').textContent = JSON.stringify(exampleArray, null, 2);
+
+      function sortArray() {
+        const key = document.getElementById('sortKey').value.trim();
+        if (!key) return alert('Введите ключ для сортировки.');
+        const arrayCopy = exampleArray.slice();
+        const sorted = getSortedArray(arrayCopy, key);
+        document.getElementById('sortedArray').textContent = JSON.stringify(sorted, null, 2);
+      }
+
+      function calculatePower() {
+        const x = parseFloat(document.getElementById('base').value);
+        const n = parseInt(document.getElementById('exponent').value, 10);
+        const resultSpan = document.getElementById('powerResult');
+        if (isNaN(x) || isNaN(n) || n <= 0 || !Number.isInteger(n)) {
+          resultSpan.textContent = 'Введите корректные значения.';
+          return;
+        }
+        try {
+          resultSpan.textContent = pow(x, n);
+        } catch (error) {
+          resultSpan.textContent = error.message;
+        }
+      }
+
+      function calculateGCD() {
+        const a = parseInt(document.getElementById('numA').value, 10);
+        const b = parseInt(document.getElementById('numB').value, 10);
+        const resultSpan = document.getElementById('gcdResult');
+        if (isNaN(a) || isNaN(b) || a < 0 || b < 0) {
+          resultSpan.textContent = 'Введите неотрицательные числа.';
+          return;
+        }
+        try {
+          resultSpan.textContent = gcd(a, b);
+        } catch (error) {
+          resultSpan.textContent = error.message;
+        }
+      }
+
+      function calculateMinDigit() {
+        const x = parseInt(document.getElementById('numberX').value, 10);
+        const resultSpan = document.getElementById('minDigitResult');
+        if (isNaN(x) || x < 0) {
+          resultSpan.textContent = 'Введите неотрицательное число.';
+          return;
+        }
+        try {
+          resultSpan.textContent = minDigit(x);
+        } catch (error) {
+          resultSpan.textContent = error.message;
+        }
+      }
+
+      function showPluralizeRecords() {
+        const n = parseInt(document.getElementById('recordCount').value, 10);
+        const resultSpan = document.getElementById('pluralizeResult');
+        if (isNaN(n) || n < 0) {
+          resultSpan.textContent = 'Введите неотрицательное целое число.';
+          return;
+        }
+        try {
+          resultSpan.textContent = pluralizeRecords(n);
+        } catch (error) {
+          resultSpan.textContent = error.message;
+        }
+      }
+
+      function calculateFibb() {
+        const n = parseInt(document.getElementById('fibbN').value, 10);
+        const resultSpan = document.getElementById('fibbResult');
+        if (isNaN(n) || n < 0 || n > 1000) {
+          resultSpan.textContent = 'Введите число от 0 до 1000.';
+          return;
+        }
+        try {
+          resultSpan.textContent = fibb(n);
+        } catch (error) {
+          resultSpan.textContent = error.message;
+        }
+      }
+
+      function cesar(str, shift, action) {
+        const alphabet = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя';
+        const lower = alphabet;
+        const upper = alphabet.toUpperCase();
+        const mod = (n, m) => ((n % m) + m) % m;
+        const actualShift = action === 'decode' ? -shift : shift;
+        let result = '';
+        for (let char of str) {
+          const iLower = lower.indexOf(char);
+          const iUpper = upper.indexOf(char);
+          if (iLower !== -1) result += lower[mod(iLower + actualShift, lower.length)];
+          else if (iUpper !== -1) result += upper[mod(iUpper + actualShift, upper.length)];
+          else result += char;
+        }
+        return result;
+      }
+
+      function applyCesar() {
+        const str = document.getElementById('cesarInput').value;
+        const shift = parseInt(document.getElementById('shift').value);
+        const action = document.getElementById('action').value;
+        const resultSpan = document.getElementById('cesarResult');
+        if (isNaN(shift)) {
+          resultSpan.textContent = 'Введите корректный сдвиг.';
+          return;
+        }
+        resultSpan.textContent = cesar(str, shift, action);
+      }
+    </script>
+  </div>
+</body>
+</html>
