@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Математическая игра</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; }
+  #game { max-width: 600px; margin: auto; }
+  #question { font-size: 1.2em; margin-bottom: 10px; }
+  #answer { width: 100px; }
+  #stats { margin-top: 20px; }
+  button { margin-top: 10px; }
+</style>
+</head>
+<body>
+<div id="game">
+  <h2>Математическая игра</h2>
+  <div id="level">Уровень: <span id="currentLevel">начальный</span></div>
+  <div id="question">Здесь будет вопрос</div>
+  <input type="text" id="answer" />
+  <button onclick="submitAnswer()">Ответить</button>
+  <div id="feedback"></div>
+  <div id="stats">
+    Правильных: <span id="correctCount">0</span>,
+    Неправильных: <span id="wrongCount">0</span>
+  </div>
+  <div id="progress"></div>
+  <button onclick="restartGame()">Начать заново</button>
+</div>
+
+<script>
+const levels = [
+  { name: 'начальный', operators: ['+', '-', '*'] },
+  { name: 'средний', operators: ['+', '-', '*', '/', '==', '!=', '<', '>', '<=', '>='] },
+  { name: 'продвинутый', operators: ['+', '-', '*', '/', '==', '!=', '<', '>', '<=', '>=', '&&', '||', '&', '|'] }
+];
+
+let currentLevelIndex = 0;
+let questionsAsked = 0;
+let correctAnswers = 0;
+let wrongAnswers = 0;
+const totalQuestions = 10;
+const correctThreshold = 0.8;
+let currentQuestion = {};
+
+function getCurrentLevel() {
+  return levels[currentLevelIndex];
+}
+
+function generateQuestion() {
+  const level = getCurrentLevel();
+  let q = {};
+  switch(level.name) {
+    case 'начальный':
+      const a1 = getRandomInt(1, 15);
+      const b1 = getRandomInt(1, 15);
+      const op1 = level.operators[getRandomInt(0, level.operators.length - 1)];
+      q.text = `${a1} ${op1} ${b1}`;
+      q.answer = evalExpression(a1, b1, op1);
+      if (typeof q.answer === 'number') {
+        q.answer = Math.round(q.answer);
+      }
+      break;
+    case 'средний':
+      const a2 = getRandomInt(1, 30);
+      const b2 = getRandomInt(1, 30);
+      const op2 = level.operators[getRandomInt(0, level.operators.length - 1)];
+      q.text = `${a2} ${op2} ${b2}`;
+      q.answer = evaluateComparison(a2, b2, op2);
+      if (typeof q.answer === 'number') {
+        q.answer = roundResult(q.answer);
+      }
+      break;
+    case 'продвинутый':
+      const a3 = getRandomInt(0, 50);
+      const b3 = getRandomInt(0, 50);
+      const op3 = level.operators[getRandomInt(0, level.operators.length - 1)];
+      q.text = `${a3} ${op3} ${b3}`;
+      q.answer = evaluateLogical(a3, b3, op3);
+      if (typeof q.answer === 'number') {
+        q.answer = roundResult(q.answer);
+      }
+      break;
+  }
+  return q;
+}
+
+function evalExpression(a, b, op) {
+  if (op === '/') {
+    if (b === 0) return 'Ошибка';
+    return a / b;
+  } else {
+    switch(op) {
+      case '+': return a + b;
+      case '-': return a - b;
+      case '*': return a * b;
+      default: return null;
+    }
+  }
+}
+
+function evaluateComparison(a, b, op) {
+  switch(op) {
+    case '==': return a == b;
+    case '!=': return a != b;
+    case '<': return a < b;
+    case '>': return a > b;
+    case '<=': return a <= b;
+    case '>=': return a >= b;
+    default: return null;
+  }
+}
+
+function evaluateLogical(a, b, op) {
+  switch(op) {
+    case '&&': return (a && b) ? true : false;
+    case '||': return (a || b) ? true : false;
+    case '&': return (a & b).toString();
+    case '|': return (a | b).toString();
+    default: return null;
+  }
+}
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function roundResult(value) {
+  return Math.round(value * 100) / 100;
+}
+
+function submitAnswer() {
+  const userAnswer = document.getElementById('answer').value.trim();
+  const feedback = document.getElementById('feedback');
+  let correctValue = currentQuestion.answer;
+
+  let isCorrect = false;
+
+  if (correctValue === 'Ошибка') {
+    isCorrect = (userAnswer.toLowerCase() === 'ошибка');
+  } else if (typeof correctValue === 'boolean') {
+    isCorrect = (userAnswer.toLowerCase() === String(correctValue));
+  } else if (typeof correctValue === 'string') {
+    isCorrect = (userAnswer === correctValue);
+  } else {
+    const numAns = parseFloat(userAnswer);
+    if (isNaN(numAns)) {
+      isCorrect = false;
+    } else {
+      const roundedAns = roundResult(numAns);
+      const roundedCorrect = roundResult(correctValue);
+      isCorrect = Math.abs(roundedAns - roundedCorrect) < 0.0001;
+    }
+  }
+
+  if (isCorrect) {
+    correctAnswers++;
+    feedback.textContent = 'Правильно!';
+  } else {
+    wrongAnswers++;
+    feedback.textContent = `Неправильно! Правильный ответ: ${currentQuestion.answer}`;
+  }
+
+  document.getElementById('correctCount').textContent = correctAnswers;
+  document.getElementById('wrongCount').textContent = wrongAnswers;
+
+  if (questionsAsked >= totalQuestions) {
+    const accuracy = correctAnswers / totalQuestions;
+    if (accuracy >= correctThreshold) {
+      if (currentLevelIndex < levels.length - 1) {
+        currentLevelIndex++;
+        alert(`Поздравляем! Вы перешли на уровень "${levels[currentLevelIndex].name}".`);
+        document.getElementById('currentLevel').textContent = levels[currentLevelIndex].name;
+        // Обнуляем счетчики и номер вопроса при переходе на новый уровень
+        correctAnswers = 0;
+        wrongAnswers = 0;
+        questionsAsked = 0;
+        document.getElementById('correctCount').textContent = 0;
+        document.getElementById('wrongCount').textContent = 0;
+      } else {
+        alert(`Вы завершили все уровни! Поздравляем!`);
+        // Можно оставить игру на последнем уровне или перезапустить
+        questionsAsked = 0;
+        correctAnswers = 0;
+        wrongAnswers = 0;
+        document.getElementById('correctCount').textContent = 0;
+        document.getElementById('wrongCount').textContent = 0;
+      }
+    } else {
+      alert(`Можно попробовать снова, чтобы повысить уровень.`);
+      questionsAsked = 0;
+      correctAnswers = 0;
+      wrongAnswers = 0;
+      document.getElementById('correctCount').textContent = 0;
+      document.getElementById('wrongCount').textContent = 0;
+    }
+  }
+  showNextQuestion();
+}
+
+function showNextQuestion() {
+  document.getElementById('answer').value = '';
+  document.getElementById('feedback').textContent = '';
+  currentQuestion = generateQuestion();
+  document.getElementById('question').textContent = `Вопрос: ${currentQuestion.text}`;
+  // Увеличиваем счетчик вопросов на 1
+  questionsAsked++;
+  // При превышении 10 вопросов сбрасываем счетчики
+  if (questionsAsked > 10) {
+    questionsAsked = 1; // или 0, в зависимости от логики
+    correctAnswers = 0;
+    wrongAnswers = 0;
+    document.getElementById('correctCount').textContent = 0;
+    document.getElementById('wrongCount').textContent = 0;
+  }
+  document.getElementById('progress').textContent = `Вопрос ${questionsAsked} из ${totalQuestions}`;
+}
+
+function restartGame() {
+  currentLevelIndex = 0;
+  questionsAsked = 0;
+  correctAnswers = 0;
+  wrongAnswers = 0;
+  document.getElementById('correctCount').textContent = 0;
+  document.getElementById('wrongCount').textContent = 0;
+  document.getElementById('currentLevel').textContent = levels[currentLevelIndex].name;
+  showNextQuestion();
+}
+
+// Инициализация
+showNextQuestion();
+document.getElementById('currentLevel').textContent = levels[currentLevelIndex].name;
+</script>
+</body>
+</html>
